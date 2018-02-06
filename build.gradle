@@ -1,0 +1,41 @@
+group 'nwn'
+version '0.1'
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url "http://maven.geotoolkit.org/" }
+    }
+    dependencies {
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'java-library-distribution'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven { url "http://maven.geotoolkit.org/" }
+    maven { url "http://simulation.tudelft.nl/maven/" }
+    maven { url "http://bits.netbeans.org/maven2" }
+}
+
+dependencies {
+    compile group: 'java3d', name: 'j3d-core-utils', version: '1.5.1'
+    compile group: 'java3d', name: 'j3d-core', version: '1.5.1'
+    compile group: 'org.netbeans.api', name: 'org-jdesktop-layout', version: 'RELEASE802'
+    compile files('j3dedit.jar', 'j3dfly.jar')
+}
+
+distZip.shouldRunAfter(build)
+
+jar {
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+    manifest {
+        attributes 'Main-Class': 'net.sf.nwn.viewer.Main',
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+    }
+}
